@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from sklearn.manifold import MDS
-import os, sys, io
 
 
 class MDSBit:
