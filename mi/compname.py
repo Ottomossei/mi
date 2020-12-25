@@ -25,6 +25,8 @@ class ChemFormula:
             patterns = patterns[:-1]
         self.regex = re.compile(patterns)
         self.list_atoms = list(self.atoms)
+        # Definition of abbreviated names
+        # self.Ln 
 
     @staticmethod
     def _num_judge(num):
@@ -70,19 +72,23 @@ class ChemFormula:
                         output[i,obj_atom_indexes[j+1]] = self._num_judge(num)
         return output
     
-    def get_molratio(self, names, ex_atoms=None):
+    def get_molratio(self, names, exc_atoms=None, ext_atoms=None):
         """
         Args:
             names(list, numpy) : List of chemical formulas
-            ex_atoms(list, numpy) : Elements to be excluded from the molar ratio calculation
+            exc_atoms(list, numpy) : Elements to be excluded from the molar ratio calculation
+            obj_atoms(list, numpy) : Elements to be objected from the molar ratio calculation
         Returns:
             mole ratio numpy[names, obj_atoms]
         """
         output = self.get_mol(names)
         # Creating a matrix that excludes the target element
-        if ex_atoms:
-            ex_atom_indexes = [self.list_atoms.index(e) for e in ex_atoms]
-            output = np.delete(output, ex_atom_indexes, 1)
+        if exc_atoms:
+            exc_atom_indexes = [self.list_atoms.index(e) for e in exc_atoms]
+            output = np.delete(output, exc_atom_indexes, 1)
+        elif obj_atoms:
+            obj_atom_indexes = [self.list_atoms.index(e) for e in obj_atoms]
+            output = output[:, obj_atom_indexes]
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
         return output
