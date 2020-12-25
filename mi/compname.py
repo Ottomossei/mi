@@ -26,6 +26,17 @@ class ChemFormula:
         self.regex = re.compile(patterns)
         self.list_atoms = list(self.atoms)
 
+    @staticmethod
+    def _num_judge(num):
+        """
+        Methods for identifying subscripts
+        """
+        if re.match(r"\d",num):
+            output = float(re.match(r"\d+\.\d+|\d",num).group(0))
+        else:
+            output = 1.0
+        return output
+
     def get_mol(self, names):
         """
         Args:
@@ -34,12 +45,6 @@ class ChemFormula:
             mol numpy[names, obj_atoms]
         """
         output = np.zeros((len(names), self.atoms.shape[0]))
-        def num_judge(num):
-            if re.match(r"\d",num):
-                output = float(re.match(r"\d+\.\d+|\d",num).group(0))
-            else:
-                output = 1.0
-            return output
         for i in range(len(names)):
             comp = names[i]
             check = self.regex.sub('', comp)
@@ -52,17 +57,17 @@ class ChemFormula:
             else:
                 for j in range(len(num_first_indexes[:-1])):
                     num = comp[num_first_indexes[j]:num_first_indexes[j+1]]
-                    output[i,obj_atom_indexes[j]] = num_judge(num)
+                    output[i,obj_atom_indexes[j]] = self._num_judge(num)
                 else:
                     # check monoatomic molecule
                     if (len(num_first_indexes[:-1])==0):
                         # example F, O2
                         num = comp[num_first_indexes[0]:]
-                        output[i,obj_atom_indexes[0]] = num_judge(num)
+                        output[i,obj_atom_indexes[0]] = self._num_judge(num)
                     else:
                         # example LiO2
                         num = comp[num_first_indexes[j+1]:]
-                        output[i,obj_atom_indexes[j+1]] = num_judge(num)
+                        output[i,obj_atom_indexes[j+1]] = self._num_judge(num)
         return output
     
     def get_molratio(self, names, ex_atoms=None):
