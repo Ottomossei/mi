@@ -1,15 +1,83 @@
-import re
-test = ["LiNa2F5"]
+import numpy as np
+import pandas as pd
+import re, os
 
-class CompName:
-    def __init__(self, path):
-        
+"""
+This module converts chemical formula information into numerical values.
+"""
 
-    def get_ratio(self, name):
-        print(name)
+class ChemFormula:
+    def __init__(self, path="./mi/data/atom.csv", index="Element"):
+        """
+        Args:
+            path(str) : Path of the csv file containing the name of the target element
+            index(str) : Index with the target element name
+        """
+        self.atoms = pd.read_csv(path)[index].values
+        patterns = str()
+        for i, a in enumerate(self.atoms):
+            if len(re.findall('[A-Z]', a)) == 1:
+                patterns += str(a) + "|"
+            else:
+                patterns += "\(" + str(a) + "\)|"
+                self.atoms[i] = "(" + str(a) + ")"
+        else:
+            patterns = patterns[:-1]
+        self.regex = re.compile(patterns)
+        self.list_atoms = list(self.atoms)
 
-
-if __name__ == "__main__":
-    cn = CompName()
-    test = ["LiNa2F5"]
-    cn.get_ratio(test)
+    def get_mol(self, names):
+        """
+        Args:
+            names(list, numpy): List of chemical formulas
+        Returns:
+            mol numpy[names, obj_atoms]
+        """
+        output = np.zeros((len(names), self.atoms.shape[0]))
+        def num_judge(num):
+            if re.match(r"\d",num):
+                output = float(re.match(r"\d+\.\d+|\d",num).group(0))
+            else:
+                output = 1.0
+            return output
+        for i in range(len(names)):
+            comp = names[i]
+            check = self.regex.sub('', comp)
+            num_first_indexes = [m.end() for m in self.regex.finditer(comp)]
+            obj_atom_indexes = [self.list_atoms.index(m.group(0)) for m in self.regex.finditer(comp)]
+            if len(re.findall('[A-Z]', check)):
+                print("Elements (" + str(re.findall('[A-Z]', check)[0]) + ") not in the database are included.")
+                output = None
+                break
+            else:
+                for j in range(len(num_first_indexes[:-1])):
+                    num = comp[num_first_indexes[j]:num_first_indexes[j+1]]
+                    output[i,obj_atom_indexes[j]] = num_judge(num)
+                else:
+                    # check monoatomic molecule
+                    if (len(num_first_indexes[:-1])==0):
+                        # example F, O2
+                        num = comp[num_first_indexes[0]:]
+                        output[i,obj_atom_indexes[0]] = num_judge(num)
+                    else:
+                        # example LiO2
+                        num = comp[num_first_indexes[j+1]:]
+                        output[i,obj_atom_indexes[j+1]] = num_judge(num)
+        return output
+    
+    def get_molratio(self, names, ex_atoms=None):
+        """
+        Args:
+            names(list, numpy) : List of chemical formulas
+            ex_atoms(list, numpy) : Elements to be excluded from the molar ratio calculation
+        Returns:
+            mole ratio numpy[names, obj_atoms]
+        """
+        output = self.get_mol(names)
+        # Creating a matrix that excludes the target element
+        if ex_atoms:
+            ex_atom_indexes = [self.list_atoms.index(e) for e in ex_atoms]
+            output = np.delete(output, ex_atom_indexes, 1)
+        for l in range(len(output)):
+            output[l] /= output.sum(axis = 1)[l]
+        return output
