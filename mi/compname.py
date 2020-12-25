@@ -72,7 +72,7 @@ class ChemFormula:
                         output[i,obj_atom_indexes[j+1]] = self._num_judge(num)
         return output
     
-    def get_molratio(self, names, exc_atoms=None, ext_atoms=None):
+    def get_molratio(self, names, exc_atoms=None, obj_atoms=None):
         """
         Args:
             names(list, numpy) : List of chemical formulas
@@ -85,10 +85,14 @@ class ChemFormula:
         # Creating a matrix that excludes the target element
         if exc_atoms:
             exc_atom_indexes = [self.list_atoms.index(e) for e in exc_atoms]
-            output = np.delete(output, exc_atom_indexes, 1)
+            # output = np.delete(output, exc_atom_indexes, 1)
+            output[:, exc_atom_indexes] = 0.0
         elif obj_atoms:
             obj_atom_indexes = [self.list_atoms.index(e) for e in obj_atoms]
-            output = output[:, obj_atom_indexes]
+            exc_atom_indexes = obj_atom_indexes not in range(len(self.list_atoms))
+            # output = output[:, obj_atom_indexes]
+            print(exc_atom_indexes)
+            output[:, exc_atom_indexes] = 0.0
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
         return output
