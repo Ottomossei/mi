@@ -85,13 +85,10 @@ class ChemFormula:
         # Creating a matrix that excludes the target element
         if exc_atoms:
             exc_atom_indexes = [self.list_atoms.index(e) for e in exc_atoms]
-            # output = np.delete(output, exc_atom_indexes, 1)
             output[:, exc_atom_indexes] = 0.0
         elif obj_atoms:
             obj_atom_indexes = [self.list_atoms.index(e) for e in obj_atoms]
-            exc_atom_indexes = obj_atom_indexes not in range(len(self.list_atoms))
-            # output = output[:, obj_atom_indexes]
-            print(exc_atom_indexes)
+            exc_atom_indexes = [i for i in np.arange(len(self.list_atoms)) if i not in obj_atom_indexes]
             output[:, exc_atom_indexes] = 0.0
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
