@@ -9,6 +9,11 @@ class CreateFeature:
         self.atom_feature_values = df_atom_features.values.T
         self.atom_feature_colnames = df_atom_features.columns.values
     
+    @staticmethod
+    def reduct_matrix(molratio, atomfeature):
+        idx = np.argwhere(molratio != 0.0)
+        return (molratio[idx] * atomfeature[idx]).reshape([-1])
+
     def get_ave_features(self, dict_molratio):
         dict_output = {}
         for label, molratioes in dict_molratio.items():
@@ -25,7 +30,7 @@ class CreateFeature:
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
             for r, molratio in enumerate(molratioes):
                 for f, atomfeature in enumerate(self.atom_feature_values):
-                    matrix[r,f] = max(molratio * atomfeature)
+                    matrix[r,f] = max(self.reduct_matrix(molratio, atomfeature))
             if label not in exc:
                 dict_output[label+"(Max)"] = matrix
         return dict_output
@@ -36,7 +41,7 @@ class CreateFeature:
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
             for r, molratio in enumerate(molratioes):
                 for f, atomfeature in enumerate(self.atom_feature_values):
-                    matrix[r,f] = min(molratio * atomfeature)
+                    matrix[r,f] = min(self.reduct_matrix(molratio, atomfeature))
             if label not in exc:
                 dict_output[label+"(Min)"] = matrix
         return dict_output
@@ -47,7 +52,7 @@ class CreateFeature:
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
             for r, molratio in enumerate(molratioes):
                 for f, atomfeature in enumerate(self.atom_feature_values):
-                    matrix[r,f] = np.std(molratio * atomfeature)
+                    matrix[r,f] = np.std(self.reduct_matrix(molratio, atomfeature))
             if label not in exc:
                 dict_output[label+"(Std)"] = matrix
         return dict_output
