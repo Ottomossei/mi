@@ -19,7 +19,7 @@ class CreateFeature:
             dict_output[label+"(Ave)"] = matrix
         return dict_output
 
-    def get_max_features(self, dict_molratio, exc=None):
+    def get_max_features(self, dict_molratio, exc=[""]):
         dict_output = {}
         for label, molratioes in dict_molratio.items():
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
@@ -30,7 +30,7 @@ class CreateFeature:
                 dict_output[label+"(Max)"] = matrix
         return dict_output
 
-    def get_min_features(self, dict_molratio, exc=None):
+    def get_min_features(self, dict_molratio, exc=[""]):
         dict_output = {}
         for label, molratioes in dict_molratio.items():
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
@@ -41,7 +41,7 @@ class CreateFeature:
                 dict_output[label+"(Min)"] = matrix
         return dict_output
 
-    def get_std_features(self, dict_molratio, exc=None):
+    def get_std_features(self, dict_molratio, exc=[""]):
         dict_output = {}
         for label, molratioes in dict_molratio.items():
             matrix = np.zeros((molratioes.shape[0], self.atom_feature_colnames.shape[0]))
