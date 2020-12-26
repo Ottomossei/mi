@@ -6,6 +6,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split, GridSearchCV
 from tqdm import tqdm
 
+
 class CreateFeature:
     def __init__(self, path="./data/atom.csv", excluded_col=["Element"]):
         df_atom_features = pd.read_csv(path).drop(excluded_col, axis=1)
@@ -81,15 +82,8 @@ class WrapperMethod():
                 if clf.best_score_ > best_score:
                     best_score = clf.best_score_
                     best_param_idx = [f]
-                    # print(self.feature_names[f])
-                    # print(self.feature_names[f])
-                    # print("  |  " + self.feature_names[f] + "  |  " + str("{:.3f}".format(best_score)))
         try:
             best_params_idx = best_params_idx + best_param_idx
-            print()
-            print("All Feature : " + str(self.feature_names[best_params_idx]))
-            print("Add Feature : " + str(self.feature_names[best_param_idx]))
-            print("Best Score : " + str("{:.3f}".format(best_score)))
             cv_score = best_score
             clf.fit(self.X_train[:, list(np.array(best_params_idx))], self.y_train)
             y_train_predict = clf.predict(self.X_train[:, list(np.array(best_params_idx))])
