@@ -91,7 +91,7 @@ class WrapperMethod():
             train_score = r2_score(self.y_train, y_train_predict)
             test_score = r2_score(self.y_test, y_test_predict)
         except:
-            print("End")
+            print("")
         return best_params_idx, cv_score, train_score, test_score
     
     def calc_forward(self, model, hyper_params):
