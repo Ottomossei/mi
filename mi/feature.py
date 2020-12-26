@@ -56,3 +56,11 @@ class CreateFeature:
             if label not in exc:
                 dict_output[label+"(Std)"] = matrix
         return dict_output
+    
+    def get_df_learning(self, dict_feature, comp_names):
+        output = pd.DataFrame(index=comp_names, columns=[])
+        for label, features in dict_feature.items():
+            labels = [label + "@" + colname for colname in self.atom_feature_colnames]
+            output[labels] = features
+        output = output.replace([np.inf, -np.inf], np.nan)
+        return output.dropna(axis = 1, how = 'any')
