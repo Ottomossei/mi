@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split, GridSearchCV
 from tqdm import tqdm
+import re
 
 
 class CreateFeature:
@@ -70,3 +71,11 @@ class CreateFeature:
         output = output.replace([np.inf, -np.inf], np.nan)
         return output.dropna(axis = 1, how = 'any')
 
+class FilterMethod:
+    def __init__(self, df):
+        df = self.df
+            
+    def get_each_filter(self):
+        feature_names = self.df.columns.values
+        p = "\@(.*)"
+        main_feature_names = {"@" + re.findall(p, f)[0] for f in feature_names}
