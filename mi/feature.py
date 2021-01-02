@@ -73,9 +73,36 @@ class CreateFeature:
 
 class FilterMethod:
     def __init__(self, df):
-        df = self.df
-            
-    def get_each_filter(self):
-        feature_names = self.df.columns.values
+        self.df = df
+    
+    @staticmethod
+    def _feature_columns(df):
+        feature_columns = df.columns.values
         p = "\@(.*)"
-        main_feature_names = {"@" + re.findall(p, f)[0] for f in feature_names}
+        main_feature_columns = list({"@" + re.findall(p, f)[0] for f in feature_columns})
+        return feature_columns, main_feature_columns
+    
+    @staticmethod
+    def _corr(feature_column, df, tol):
+        feature_columns = df.columns.values
+        target_columns = [f for f in feature_columns if re.findall(feature_column+'$', f)]
+        df_corr = df.loc[:, target_columns].corr().abs()
+        s_del, s_app = set(), set()
+        for target_column in target_columns:
+            overtol = list(df_corr[df_corr[target_column] > tol].index)
+            overtol.remove(target_column)
+            if (target_column not in s_del) and (target_column not in s_app):
+                s_app.add(target_column)
+            for o in overtol:
+                if (o not in s_app) and (o not in s_del):
+                    s_del.add(o)
+        new_feature_columns = list(s_app)
+        return df[new_feature_columns]
+    
+    def get_each_filter(self, tol):
+        feature_columns, main_feature_columns = self._feature_columns(self.df)
+        df_output = self._corr(main_feature_columns[0], self.df, tol)
+        for feature_column in main_feature_columns[1:]:
+            df_add = self._corr(feature_column, self.df, tol)
+            df_output = pd.concat([df_output, df_add], axis=1)
+        return df_output
