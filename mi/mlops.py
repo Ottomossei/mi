@@ -12,16 +12,17 @@ class WrapperMethod():
     def forward_search(self, clf, best_score, best_params_idx):
         for f in tqdm(range(len(self.feature_names))):
             if f not in best_params_idx:
-                clf.fit(self.X_train[:, list(np.array([f]+best_params_idx))], self.y_train)
+                new = [f] + best_params_idx
+                clf.fit(self.X_train[:, new], self.y_train)
                 if clf.best_score_ > best_score:
                     best_score = clf.best_score_
                     best_param_idx = [f]
         try:
             best_params_idx = best_params_idx + best_param_idx
             cv_score = best_score
-            clf.fit(self.X_train[:, list(np.array(best_params_idx))], self.y_train)
-            y_train_predict = clf.predict(self.X_train[:, list(np.array(best_params_idx))])
-            y_test_predict = clf.predict(self.X_test[:, list(np.array(best_params_idx))])
+            clf.fit(self.X_train[:, best_params_idx], self.y_train)
+            y_train_predict = clf.predict(self.X_train[:, best_params_idx])
+            y_test_predict = clf.predict(self.X_test[:, best_params_idx])
             train_score = r2_score(self.y_train, y_train_predict)
             test_score = r2_score(self.y_test, y_test_predict)
         except:
@@ -40,7 +41,8 @@ class WrapperMethod():
                 train_scores.append(train_score)
                 test_scores.append(test_score)
             except:
-                return best_params_idx, cv_scores, train_scores, test_scores
+                break
+        return best_params_idx, cv_scores, train_scores, test_scores
 
 
 
