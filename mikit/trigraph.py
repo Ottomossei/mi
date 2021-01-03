@@ -94,8 +94,6 @@ class TriView:
     def get_tri_graph(self, atoms, tensor, view_z):
         view_x, view_y = self._get_xy(tensor)
         T = tri.Triangulation(view_x, view_y)
-
-        # fig = plt.figure(tight_layout=dict(pad=2))
         fig = plt.figure()
         fig.subplots_adjust(left=0, right=1)
         plt.rcParams['font.family'] = 'Times New Roman'
@@ -151,15 +149,12 @@ class TriView:
         # プロット
         plt.xlim(0,1)
         ax1.tricontourf(view_x, view_y, T.triangles, view_z, cmap = cmap, norm = norm, levels = levels, zorder=1)
-        # ax1.scatter(view_x, view_y, c = view_z, s = 40, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
         plt.rcParams['font.family'] = 'Times New Roman'
         return fig
     
     def add_plot(self, graph, tensor, view_z=np.array([None])):
         view_x, view_y = self._get_xy(tensor)
         T = tri.Triangulation(view_x, view_y)
-        # fig = plt.figure(tight_layout=dict(pad=2))]
-        # plt.figure(tight_layout=dict(pad=2))
         ax1 = graph.add_subplot(111)
         graph.subplots_adjust(left = 0, right=1, bottom=0.2, top=1.1)
         if not np.any(view_z):
