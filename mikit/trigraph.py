@@ -97,7 +97,7 @@ class TriView:
 
         # fig = plt.figure(tight_layout=dict(pad=2))
         fig = plt.figure()
-        fig.subplots_adjust(left=0, right=1.5, bottom=0, top=1)
+        fig.subplots_adjust(left=0, right=1)
         plt.rcParams['font.family'] = 'Times New Roman'
         ax1 = fig.add_subplot(111)
         ax1.set_aspect('equal', 'datalim')
@@ -148,7 +148,8 @@ class TriView:
         sm.set_array([])
         fig.colorbar(sm, shrink=0.8)
 
-        # プロット 
+        # プロット
+        plt.xlim(0,1)
         ax1.tricontourf(view_x, view_y, T.triangles, view_z, cmap = cmap, norm = norm, levels = levels, zorder=1)
         # ax1.scatter(view_x, view_y, c = view_z, s = 40, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
         plt.rcParams['font.family'] = 'Times New Roman'
@@ -160,7 +161,7 @@ class TriView:
         # fig = plt.figure(tight_layout=dict(pad=2))]
         # plt.figure(tight_layout=dict(pad=2))
         ax1 = graph.add_subplot(111)
-        graph.subplots_adjust(left=0, right=1.5, bottom=0, top=1)
+        graph.subplots_adjust(left = 0, right=1, bottom=0.2, top=1.1)
         if not np.any(view_z):
             ax1.scatter(view_x, view_y, c = "black", s = 20, linewidth = 1, zorder=4)
         else:
