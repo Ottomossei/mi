@@ -27,7 +27,7 @@ class WrapperMethod():
             test_score = r2_score(self.y_test, y_test_predict)
         except:
             pass
-        return best_params_idx, cv_score, train_score, test_score
+        return best_params_idx, cv_score, train_score, test_score, clf
     
     def calc_forward(self, model, hyper_params):
         cv_score, new_cv_score = 0.01, 0
@@ -36,13 +36,13 @@ class WrapperMethod():
         while cv_score >= new_cv_score:
             new_cv_score = cv_score
             try:
-                best_params_idx, cv_score, train_score, test_score = self.forward_search(clf, cv_score, best_params_idx)
+                best_params_idx, cv_score, train_score, test_score, best_clf = self.forward_search(clf, cv_score, best_params_idx)
                 cv_scores.append(cv_score)
                 train_scores.append(train_score)
                 test_scores.append(test_score)
             except:
                 break
-        return best_params_idx, cv_scores, train_scores, test_scores
+        return best_params_idx, cv_scores, train_scores, test_scores, best_clf
 
 
 
