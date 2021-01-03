@@ -132,3 +132,7 @@ if __name__ == "__main__":
     cn = TriChemFormula()
     comps = cn.get_pseudo_ratio(["Li", "Pb", "Sn"])
     print(comps)
+
+"""
+dataframeのcompsから、対象のcomp_nameをとってくる機能を追加する
+"""
