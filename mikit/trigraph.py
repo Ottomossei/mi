@@ -96,7 +96,6 @@ class TriView:
         T = tri.Triangulation(view_x, view_y)
 
         fig = plt.figure(tight_layout=dict(pad=2))
-        # fig = plt.figure()
         fig.subplots_adjust(left=0, right=2, bottom=0, top=1)
         plt.rcParams['font.family'] = 'Times New Roman'
         ax1 = fig.add_subplot(111)
@@ -160,9 +159,9 @@ class TriView:
         # fig = plt.figure(tight_layout=dict(pad=2))]
         # plt.figure(tight_layout=dict(pad=2))
         ax1 = graph.add_subplot(111)
-        graph.subplots_adjust(left=0, right=2, bottom=0, top=1)
+        graph.subplots_adjust(left=0, right=1.5, bottom=0, top=1)
         if not np.any(view_z):
-            ax1.scatter(view_x, view_y, c = "black", s = 40, linewidth = 1, zorder=4)
+            ax1.scatter(view_x, view_y, c = "black", s = 20, linewidth = 1, zorder=4)
         else:
             # カラーバーの範囲
             vmin = np.min(view_z)
@@ -173,5 +172,5 @@ class TriView:
             # 図の設定
             sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
             sm.set_array([])
-            ax1.scatter(view_x, view_y, c = view_z, s = 40, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
+            ax1.scatter(view_x, view_y, c = view_z, s = 20, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
         return graph
