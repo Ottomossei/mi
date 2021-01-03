@@ -117,9 +117,13 @@ class TriChemFormula(ChemFormula):
         comp_names = self.get_tri_name(atoms, delta, conductor_atom)
         return self.get_molratio(comp_names)
 
-    def get_pseudo_ratio(self, atoms, delta = 0.01, conductor_atom = "F"):
-        comp_names = self.get_tri_name(atoms, delta, conductor_atom)
-        return self.get_molratio(comp_names, exc_atoms=conductor_atom)
+    def get_only_pseudo_ratio(self, comp_names, obj_atoms):
+        output = self.get_molratio(comp_names, obj_atoms = obj_atoms)
+        obj_atom_indexes = [self.list_atoms.index(e) for e in obj_atoms]
+        output = output[:,obj_atom_indexes]
+        for l in range(len(output)):
+            output[l] /= output.sum(axis = 1)[l]
+        return output
 
 if __name__ == "__main__":
     cn = TriChemFormula()
