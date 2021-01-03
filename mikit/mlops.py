@@ -26,22 +26,22 @@ class WrapperMethod():
             train_score = r2_score(self.y_train, y_train_predict)
             test_score = r2_score(self.y_test, y_test_predict)
         except:
-            pass
-        return best_params_idx, cv_score, train_score, test_score, clf
+            best_params_idx, cv_score, train_score, test_score, clf.best_estimator_ = None, None, None, None, None
+        return best_params_idx, cv_score, train_score, test_score, clf.best_estimator_
     
     def calc_forward(self, model, hyper_params):
         cv_score, new_cv_score = 0.01, 0
         best_params_idx, cv_scores, train_scores, test_scores = list(), list(), list(), list()
         clf = GridSearchCV(model, hyper_params)
-        while cv_score >= new_cv_score:
+        while cv_score != None:
             new_cv_score = cv_score
-            try:
-                best_params_idx, cv_score, train_score, test_score, best_clf = self.forward_search(clf, cv_score, best_params_idx)
+            new_best_params_idx, cv_score, train_score, test_score, new_best_clf = self.forward_search(clf, cv_score, best_params_idx)
+            if cv_score != None:
+                best_params_idx = new_best_params_idx
+                best_clf = new_best_clf
                 cv_scores.append(cv_score)
                 train_scores.append(train_score)
                 test_scores.append(test_score)
-            except:
-                break
         return best_params_idx, cv_scores, train_scores, test_scores, best_clf
 
 
