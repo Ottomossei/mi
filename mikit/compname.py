@@ -93,3 +93,4 @@ class ChemFormula:
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
         return output
+
