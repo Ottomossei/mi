@@ -103,14 +103,17 @@ class TriChemFormula(ChemFormula):
         idx = [all_atoms.index(atom) for atom in atoms]
         comp_names = []
         x, y, z = atoms[0:3]
-        nums = [round(x * delta, 5) for x in range(101)]
+        nums = np.array([x for x in range(int(1/delta) + 1)]) / int(1/delta)
         li_nums = list()
         for x in nums:
             for y in nums:
                 z = round(1 - x - y, 5)
-                if z >= 0:
+                if z > 0:
                     c = round(x * valence[idx[0]] + y * valence[idx[1]] + z * valence[idx[2]], 5)
                     comp_names.append(atoms[0] + str(x) + atoms[1] + str(y) + atoms[2] + str(z) + conductor_atom + str(c))
+                elif z == 0:
+                    c = round(x * valence[idx[0]] + y * valence[idx[1]] + 0 * valence[idx[2]], 5)
+                    comp_names.append(atoms[0] + str(x) + atoms[1] + str(y) + atoms[2] + str(0) + conductor_atom + str(c))
         return comp_names
 
     def get_all_ratio(self, atoms, delta = 0.01, conductor_atom = "F"):
