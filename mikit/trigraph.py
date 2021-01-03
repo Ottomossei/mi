@@ -96,7 +96,7 @@ class TriView:
         T = tri.Triangulation(view_x, view_y)
 
         fig = plt.figure(tight_layout=dict(pad=2))
-        fig.subplots_adjust(left=0, right=2, bottom=0, top=1)
+        fig.subplots_adjust(left=0, right=1.5, bottom=0, top=1)
         plt.rcParams['font.family'] = 'Times New Roman'
         ax1 = fig.add_subplot(111)
         ax1.set_aspect('equal', 'datalim')
