@@ -7,13 +7,14 @@ This module converts chemical formula information into numerical values.
 """
 
 class ChemFormula:
-    def __init__(self, path="./mi/data/atom.csv", index="Element"):
+    def __init__(self, path="./data/atom.csv", index="Element"):
         """
         Args:
             path(str) : Path of the csv file containing the name of the target element
             index(str) : Index with the target element name
         """
-        self.atoms = pd.read_csv(path)[index].values
+        self.path = path
+        self.atoms = pd.read_csv(self.path)[index].values
         patterns = str()
         for i, a in enumerate(self.atoms):
             if len(re.findall('[A-Z]', a)) == 1:
@@ -94,3 +95,33 @@ class ChemFormula:
             output[l] /= output.sum(axis = 1)[l]
         return output
 
+class TriChemFormula(ChemFormula):
+    def get_tri_name(self, atoms, delta, conductor_atom, index = "valence"):
+        valence = pd.read_csv(self.path)[index].values
+        all_atoms = list(self.atoms)
+        atoms.append(conductor_atom)
+        idx = [all_atoms.index(atom) for atom in atoms]
+        comp_names = []
+        x, y, z = atoms[0:3]
+        nums = [round(x * delta, 5) for x in range(101)]
+        li_nums = list()
+        for x in nums:
+            for y in nums:
+                z = round(1 - x - y, 5)
+                if z >= 0:
+                    c = round(x * valence[idx[0]] + y * valence[idx[1]] + z * valence[idx[2]], 5)
+                    comp_names.append(atoms[0] + str(x) + atoms[1] + str(y) + atoms[2] + str(z) + conductor_atom + str(c))
+        return comp_names
+
+    def get_all_ratio(self, atoms, delta = 0.01, conductor_atom = "F"):
+        comp_names = self.get_tri_name(atoms, delta, conductor_atom)
+        return self.get_molratio(comp_names)
+
+    def get_pseudo_ratio(self, atoms, delta = 0.01, conductor_atom = "F"):
+        comp_names = self.get_tri_name(atoms, delta, conductor_atom)
+        return self.get_molratio(comp_names, exc_atoms=conductor_atom)
+
+if __name__ == "__main__":
+    cn = TriChemFormula()
+    comps = cn.get_pseudo_ratio(["Li", "Pb", "Sn"])
+    print(comps)
