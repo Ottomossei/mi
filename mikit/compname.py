@@ -94,15 +94,26 @@ class ChemFormula:
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
         return output
+    
+    def get_obj_name(self, names, obj_atoms, conductor_atom = "F"):
+        p = "[A-Z][a-z]|[A-Z]"
+        obj_atoms.append(conductor_atom)
+        output = [n for n in names if len(set(re.findall(p, n)) & set(obj_atoms)) == len(set(re.findall(p, n)))]
+        return output
+
+
 
 class TriChemFormula(ChemFormula):
-    def get_tri_name(self, atoms, delta, conductor_atom, index = "valence"):
+    def __init__(self, path="./data/atom.csv", index="Element"):
+        super().__init__(path, index)
+    
+    def get_tri_name(self, obj_atoms, delta, conductor_atom = "F", index = "valence"):
         valence = pd.read_csv(self.path)[index].values
         all_atoms = list(self.atoms)
-        atoms.append(conductor_atom)
-        idx = [all_atoms.index(atom) for atom in atoms]
+        obj_atoms.append(conductor_atom)
+        idx = [all_atoms.index(atom) for atom in obj_atoms]
         comp_names = []
-        x, y, z = atoms[0:3]
+        x, y, z = obj_atoms[0:3]
         nums = np.array([x for x in range(int(1/delta) + 1)]) / int(1/delta)
         li_nums = list()
         for x in nums:
@@ -110,10 +121,10 @@ class TriChemFormula(ChemFormula):
                 z = round(1 - x - y, 5)
                 if z > 0:
                     c = round(x * valence[idx[0]] + y * valence[idx[1]] + z * valence[idx[2]], 5)
-                    comp_names.append(atoms[0] + str(x) + atoms[1] + str(y) + atoms[2] + str(z) + conductor_atom + str(c))
+                    comp_names.append(obj_atoms[0] + str(x) + obj_atoms[1] + str(y) + obj_atoms[2] + str(z) + conductor_atom + str(c))
                 elif z == 0:
                     c = round(x * valence[idx[0]] + y * valence[idx[1]] + 0 * valence[idx[2]], 5)
-                    comp_names.append(atoms[0] + str(x) + atoms[1] + str(y) + atoms[2] + str(0) + conductor_atom + str(c))
+                    comp_names.append(obj_atoms[0] + str(x) + obj_atoms[1] + str(y) + obj_atoms[2] + str(0) + conductor_atom + str(c))
         return comp_names
 
     def get_all_ratio(self, atoms, delta = 0.01, conductor_atom = "F"):
@@ -127,12 +138,10 @@ class TriChemFormula(ChemFormula):
         for l in range(len(output)):
             output[l] /= output.sum(axis = 1)[l]
         return output
-
+    
 if __name__ == "__main__":
-    cn = TriChemFormula()
-    comps = cn.get_pseudo_ratio(["Li", "Pb", "Sn"])
-    print(comps)
-
-"""
-dataframeのcompsから、対象のcomp_nameをとってくる機能を追加する
-"""
+    names = ["LiPO4", "BaSnF4", "Pb2SnF2", "BaF", "LaBaF"]
+    obj_atoms = ["Ba", "Sn", "La"]
+    cn = ChemFormula()
+    test = cn.get_obj_name(names, obj_atoms)
+    # print(comps)

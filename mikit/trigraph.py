@@ -158,7 +158,7 @@ class TriView:
         ax1 = graph.add_subplot(111)
         graph.subplots_adjust(left = 0, right=1, bottom=0.2, top=1.1)
         if not np.any(view_z):
-            ax1.scatter(view_x, view_y, c = "black", s = 20, linewidth = 1, zorder=4)
+            ax1.scatter(view_x, view_y, c = "black", s = 40, linewidth = 1, zorder=4)
         else:
             # カラーバーの範囲
             vmin = np.min(view_z)
@@ -169,5 +169,5 @@ class TriView:
             # 図の設定
             sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
             sm.set_array([])
-            ax1.scatter(view_x, view_y, c = view_z, s = 20, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
+            ax1.scatter(view_x, view_y, c = view_z, s = 40, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
         return graph
