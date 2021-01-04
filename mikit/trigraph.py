@@ -150,6 +150,8 @@ class TriView:
         plt.xlim(0,1)
         ax1.tricontourf(view_x, view_y, T.triangles, view_z, cmap = cmap, norm = norm, levels = levels, zorder=1)
         plt.rcParams['font.family'] = 'Times New Roman'
+        self.norm = norm
+        self.cmap = cmap
         return fig
     
     def add_plot(self, graph, tensor, view_z=np.array([None])):
@@ -160,14 +162,5 @@ class TriView:
         if not np.any(view_z):
             ax1.scatter(view_x, view_y, c = "black", s = 40, linewidth = 1, zorder=4)
         else:
-            # カラーバーの範囲
-            vmin = np.min(view_z)
-            vmax = np.max(view_z)
-            norm = matplotlib.colors.Normalize(vmin = vmin, vmax = vmax)
-            cmap = plt.cm.rainbow
-
-            # 図の設定
-            sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-            sm.set_array([])
-            ax1.scatter(view_x, view_y, c = view_z, s = 40, linewidth = 1, edgecolor = 'black', norm = norm, cmap = cmap, zorder=4)
+            ax1.scatter(view_x[::-1], view_y[::-1], c = view_z[::-1], s = 40, linewidth = 1, edgecolor = 'black', norm = self.norm, cmap = self.cmap, zorder=4)
         return graph
