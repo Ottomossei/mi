@@ -95,8 +95,9 @@ class ChemFormula:
             output[l] /= output.sum(axis = 1)[l]
         return output
     
-    def get_obj_name(self, names, obj_atoms, conductor_atom = "F"):
+    def get_obj_name(self, names, origin_obj_atoms, conductor_atom = "F"):
         p = "[A-Z][a-z]|[A-Z]"
+        obj_atoms = origin_obj_atoms[:]
         obj_atoms.append(conductor_atom)
         output = [n for n in names if len(set(re.findall(p, n)) & set(obj_atoms)) == len(set(re.findall(p, n)))]
         return output
@@ -107,9 +108,10 @@ class TriChemFormula(ChemFormula):
     def __init__(self, path="./data/atom.csv", index="Element"):
         super().__init__(path, index)
     
-    def get_tri_name(self, obj_atoms, delta, conductor_atom = "F", index = "valence"):
+    def get_tri_name(self, origin_obj_atoms, delta, conductor_atom = "F", index = "valence"):
         valence = pd.read_csv(self.path)[index].values
         all_atoms = list(self.atoms)
+        obj_atoms = origin_obj_atoms[:]
         obj_atoms.append(conductor_atom)
         idx = [all_atoms.index(atom) for atom in obj_atoms]
         comp_names = []
