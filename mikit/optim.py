@@ -10,7 +10,7 @@ import numpy as np
 
 from compname import ChemFormula, TriChemFormula
 
-BASIC_KERNEL = ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + DotProduct()
+BASIC_KERNEL = ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + ConstantKernel() * DotProduct()
 
 class BayesOpt():
     def __init__(self, X_all, xi = 0.01, kernel = None):
@@ -38,8 +38,8 @@ class BayesOpt():
             Z = imp / sigma
             ei = imp * norm.cdf(Z) + sigma * norm.pdf(Z)
             ei[sigma == 0.0] = 0.0
-        self.mu = mu
-        self.sigma = sigma
+        self.mu = mu.ravel()
+        self.sigma = sigma.ravel()
         self.ei = ei.ravel()
     
     def get_info(self):
@@ -51,7 +51,6 @@ class BayesOpt():
         ei = self.ei.copy()
         X_obj = self.X_all.copy()
         X_next = list()
-        # print(X_obj)
         for n in range(num):
             idx = ei.argmax()
             X_next.append(X_obj[idx])
@@ -73,32 +72,4 @@ class BayesOpt():
     #         Log(str(4 * int(N) + n + 1) + "st_Compositon : " + str(comps[idx]) + "  EI : " + str(ei[idx]))
     #         comps, space, ei = self.Remove_Comp(idx, comps, space, ei, d_cut)
     #     return target_ratioes, target_names, output_ei
-    
-    
 
-
-
-if __name__ == "__main__":
-    # creating chemical formula
-    atoms = ["Pb", "Sn", "La"]
-    tcf = TriChemFormula()
-    # creating comp name
-    comp_all = tcf.get_tri_name(atoms, delta = 0.05)
-    X_all = tcf.get_only_pseudo_ratio(comp_all,  atoms)
-    # Experimental composition and results
-    comp_exp = ["PbF2", "SnF2", "LaF3", "PbSnF4"]
-    X_exp = tcf.get_only_pseudo_ratio(comp_exp,  atoms)
-    y_exp = np.array([-5.5, -8.3, -8.9, -3.4])
-    # Bayesian Optimization
-    bo = BayesOpt(X_all)
-    bo.fit(X_exp, y_exp)
-    mu, sigma, ei = bo.get_info()
-    print(ei)
-    X_predict = bo.get_next(1)
-    print(X_predict)
-
-
-    
-"""
-アルゴリズム検討
-"""
