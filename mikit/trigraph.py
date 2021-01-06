@@ -102,5 +102,3 @@ class TriGraph:
             T = tri.Triangulation(view_x, view_y)
             self.set_colorbar(view_z)
             self.ax1.scatter(view_x[::-1], view_y[::-1], c = view_z[::-1], s = 40, linewidth = 1, edgecolor = 'black', norm = self.norm, cmap = self.cmap, zorder=4)
-
-# buggs　複数の色合いを１つのカラーバーにしたい
