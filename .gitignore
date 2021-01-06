@@ -3,3 +3,4 @@ __pycache__
 .vscode
 demo_rf.ipynb
 test.py
+mikit.egg-info
