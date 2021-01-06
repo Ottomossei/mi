@@ -1,7 +1,5 @@
-import os, io, sys, re, math, itertools
+import os, io, sys, re
 import pandas as pd
-from functools import reduce
-from pymatgen.core import Composition
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ConstantKernel, RBF, WhiteKernel, DotProduct, Matern, ExpSineSquared
 from sklearn.preprocessing import StandardScaler
