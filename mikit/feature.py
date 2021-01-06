@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from compname import ChemFormula
+from .compname import ChemFormula
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split, GridSearchCV
