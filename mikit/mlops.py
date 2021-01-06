@@ -45,7 +45,7 @@ class WrapperMethod():
             train_score = r2_score(self.y_train, y_train_predict)
             test_score = r2_score(self.y_test, y_test_predict)
         except:
-            best_params_idx, cv_score, train_score, test_score, clf.best_estimator_ = None, None, None, None, None
+            best_params_idx, cv_score, train_score, test_score = None, None, None, None
         return best_params_idx, cv_score, train_score, test_score, clf.best_estimator_
     
     def calc_forward(self, model, hyper_params):
@@ -55,13 +55,13 @@ class WrapperMethod():
             hyper_params(dict) : hyper parameters
         Return:
             best_params_idx(list) :  Index of adopted features
-            cv_scores(float) : R2 scores of CV
-            train_scores(float) : R2 scores of training
-            test_scores(float) :  R2 scores of testing
+            scores(dict) : R2 scores of [cv, train, test]
             best_clf(sklearn) : Best learning model
         """
         cv_score, new_cv_score = 0.01, 0
-        best_params_idx, cv_scores, train_scores, test_scores = list(), list(), list(), list()
+        # best_params_idx, cv_scores, train_scores, test_scores = list(), list(), list(), list()
+        best_params_idx, scores = list(), dict()
+        scores["cv"], scores["train"], scores["test"] = list(), list(), list()
         clf = GridSearchCV(model, hyper_params)
         while cv_score != None:
             new_cv_score = cv_score
@@ -69,10 +69,10 @@ class WrapperMethod():
             if cv_score != None:
                 best_params_idx = new_best_params_idx
                 best_clf = new_best_clf
-                cv_scores.append(cv_score)
-                train_scores.append(train_score)
-                test_scores.append(test_score)
-        return best_params_idx, cv_scores, train_scores, test_scores, best_clf
+                scores["cv"].append(cv_score)
+                scores["train"].append(train_score)
+                scores["test"].append(test_score)
+        return best_params_idx, scores, best_clf
 
 
 

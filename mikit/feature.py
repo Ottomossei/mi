@@ -17,7 +17,7 @@ class CreateFeature:
         """
         default_path = os.path.dirname(__file__) + "/data/atom.csv"
         self.path = path if path is not None else default_path
-        df_atom_features = pd.read_csv(path).drop(excluded_col, axis=1)
+        df_atom_features = pd.read_csv(self.path).drop(excluded_col, axis=1)
         df_atom_features = ((df_atom_features - df_atom_features.min()) / (df_atom_features.max() - df_atom_features.min()))
         self.atom_feature_values = df_atom_features.values.T
         self.atom_feature_colnames = df_atom_features.columns.values
