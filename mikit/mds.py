@@ -37,10 +37,3 @@ class MDSBit:
                 break
             old_df = df
         return output
-
-if __name__ == "__main__":
-    path = "./mi/data/bit_features.csv"
-    data = pd.read_csv(path, index_col = 0).values
-    mds = MDSBit()
-    df = mds.get_mds(data, 0.10)
-    print(df)

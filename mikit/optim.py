@@ -14,11 +14,22 @@ BASIC_KERNEL = ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + ConstantKerne
 
 class BayesOpt():
     def __init__(self, X_all, xi = 0.01, kernel = None):
+        """
+        Args:
+            X_all(numpy) : Search area
+            xi(float) : Trade-off parameter between exploration and exploitation
+            kernel(sklearn) : Kernel used in gaussian distribution
+        """
         self.X_all = X_all
         self.xi = xi
         self.kernel = kernel if kernel is not None else BASIC_KERNEL
 
     def fit(self, X_exp, y_exp):
+        """
+        Args:
+            X_exp(numpy) : Explanatory variables
+            y_exp(numpy) : Objective variable
+        """
         y_exp = y_exp.reshape(-1, 1)
         scaler_y = StandardScaler().fit(y_exp)
         # Fitting of gaussian process
@@ -46,6 +57,15 @@ class BayesOpt():
         return self.mu, self.sigma, self.ei
     
     def delete_cutoff(self, idx, X_obj, ei):
+        """
+        Args:
+            idx(int) : Idex of next point
+            X_obj(numpy) : Explanatory variables
+            ei(numpy) : Expectation improvement
+        Return:
+            X_obj(numpy) : Explanatory variables without variables in the cutoff radius
+            ei(numpy) : Expectation improvement without variables in the cutoff radius
+        """
         p = X_obj[idx]
         idx_del = list()
         for i in range(ei.shape[0]):
@@ -57,6 +77,13 @@ class BayesOpt():
         return X_obj, ei
         
     def get_next(self, num, cutoff=0.1):
+        """
+        Args:
+            num(int) : The number of the next point
+            cutoff(float) : Cutoff distance in Euclidean space
+        Return:
+            X_next : Recommended coordinates (next point)
+        """
         self.cutoff = cutoff
         ei = self.ei.copy()
         X_obj = self.X_all.copy()
