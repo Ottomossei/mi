@@ -45,31 +45,24 @@ class BayesOpt():
     def get_info(self):
         return self.mu, self.sigma, self.ei
     
+    def delete_cutoff(self, idx, X_obj, ei):
+        p = X_obj[idx]
+        idx_del = list()
+        for i in range(ei.shape[0]):
+            q = X_obj[i]
+            if np.sqrt(np.power(p-q, 2).sum()) < self.cutoff:
+                idx_del.append(i)
+        X_obj = np.delete(X_obj, idx_del, 0)
+        ei = np.delete(ei, idx_del, 0)
+        return X_obj, ei
+        
     def get_next(self, num, cutoff=0.1):
-        def remove_obj():
-            print("a")
+        self.cutoff = cutoff
         ei = self.ei.copy()
         X_obj = self.X_all.copy()
         X_next = list()
         for n in range(num):
             idx = ei.argmax()
             X_next.append(X_obj[idx])
-            # remove_idx = 
+            X_obj, ei = self.delete_cutoff(idx, X_obj, ei)
         return np.array(X_next)
-
-        
-
-    
-    # def bays_optimize(self, xi, next_point, y_gp, y_gp_std, y_gp_exp, d_cut):
-    #     ei = self.EI(xi, y_gp, y_gp_std, y_gp_exp)
-    #     output_ei = ei
-    #     comps, space = COMP, X_all
-    #     target_ratioes, target_names = [], []
-    #     for n in range(next_point):
-    #         idx = ei.argmax()
-    #         target_ratioes.append(space[idx])
-    #         target_names.append(comps[idx])
-    #         Log(str(4 * int(N) + n + 1) + "st_Compositon : " + str(comps[idx]) + "  EI : " + str(ei[idx]))
-    #         comps, space, ei = self.Remove_Comp(idx, comps, space, ei, d_cut)
-    #     return target_ratioes, target_names, output_ei
-
