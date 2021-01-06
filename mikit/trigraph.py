@@ -85,13 +85,15 @@ class TriView:
         self.cmap = cmap
         return fig
     
-    def add_plot(self, graph, tensor, view_z=np.array([None])):
-        view_x, view_y = self._get_xy(tensor)
-        T = tri.Triangulation(view_x, view_y)
+    def add_plot(self, graph, tensor, view_z=np.array([None]), marktype=None):
         ax1 = graph.add_subplot(111)
+        view_x, view_y = self._get_xy(tensor)
         graph.subplots_adjust(left = 0, right=1, bottom=0.2, top=1.1)
-        if not np.any(view_z):
+        if not np.any(view_z) and marktype == None:
             ax1.scatter(view_x, view_y, c = "black", s = 40, linewidth = 1, zorder=4)
+        elif marktype == "b":
+            ax1.scatter(view_x, view_y, c = "yellow", s = 200, linewidth = 1, zorder=4, marker = "*", edgecolor = 'black')
         else:
+            T = tri.Triangulation(view_x, view_y)
             ax1.scatter(view_x[::-1], view_y[::-1], c = view_z[::-1], s = 40, linewidth = 1, edgecolor = 'black', norm = self.norm, cmap = self.cmap, zorder=4)
         return graph
