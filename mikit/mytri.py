@@ -46,7 +46,6 @@ class TriGraph:
 
         self.fig = fig
         self.ax1 = ax1
-        self.c_set = False
 
     def get_graph(self):
         return self.fig
@@ -58,36 +57,34 @@ class TriGraph:
         view_y = 3**0.5 *0.5 * (x) / (x + y + z)
         return view_x, view_y
     
-    def set_colorbar(self, view_z):
-        if not self.c_set:
-            # カラーバーの範囲
-            vmin = np.min(view_z)
-            vmax = np.max(view_z)
-            self.norm = matplotlib.colors.Normalize(vmin = vmin, vmax = vmax)
+    def set_norms(self, view_z):
+        # カラーバーの範囲
+        vmin = np.min(view_z)
+        vmax = np.max(view_z)
+        self.norm = matplotlib.colors.Normalize(vmin = vmin, vmax = vmax)
 
-            #プロット間隔
-            self.levels = []
-            if vmax > 0:
-                lim = vmax * 51 / 50
-            else:
-                lim = vmax * 49 / 50
+        #プロット間隔
+        self.levels = []
+        if vmax > 0:
+            lim = vmax * 51 / 50
+        else:
+            lim = vmax * 49 / 50
 
-            while vmin <= lim:
-                self.levels.append(float(vmin))
-                vmin = float(vmin) + abs(float(vmax)) / 50
-            self.cmap = plt.cm.rainbow
+        while vmin <= lim:
+            self.levels.append(float(vmin))
+            vmin = float(vmin) + abs(float(vmax)) / 50
+        self.cmap = plt.cm.rainbow
 
-            # 図の設定
-            self.sm = plt.cm.ScalarMappable(cmap=self.cmap, norm=self.norm)
-            self.sm.set_array([])
-            self.fig.colorbar(self.sm, shrink=0.8)
-            self.c_set = True
+        # 図の設定
+        self.sm = plt.cm.ScalarMappable(cmap=self.cmap, norm=self.norm)
+        self.sm.set_array([])
 
 
     def add_contourf(self, tensor, view_z):
         view_x, view_y = self._get_xy(tensor)
         T = tri.Triangulation(view_x, view_y)
-        self.set_colorbar(view_z)
+        self.set_norms(view_z)
+        self.fig.colorbar(self.sm, shrink=0.8)
         # プロット
         self.ax1.tricontourf(view_x, view_y, T.triangles, view_z, cmap = self.cmap, norm = self.norm, levels = self.levels, zorder=1)
         plt.rcParams['font.family'] = 'Times New Roman'
@@ -100,7 +97,5 @@ class TriGraph:
             self.ax1.scatter(view_x, view_y, c = "yellow", s = 200, linewidth = 1, zorder=4, marker = "*", edgecolor = 'black')
         else:
             T = tri.Triangulation(view_x, view_y)
-            self.set_colorbar(view_z)
             self.ax1.scatter(view_x[::-1], view_y[::-1], c = view_z[::-1], s = 40, linewidth = 1, edgecolor = 'black', norm = self.norm, cmap = self.cmap, zorder=4)
-
-# buggs　複数の色合いを１つのカラーバーにしたい
+        
