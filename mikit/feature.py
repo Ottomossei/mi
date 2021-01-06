@@ -9,12 +9,14 @@ import re
 
 
 class CreateFeature:
-    def __init__(self, path="./data/atom.csv", excluded_col=["Element"]):
+    def __init__(self, path=None, excluded_col=["Element"]):
         """
         Args:
             path(str) : Path of the csv file containing the name of the target element
             index(str) : Index with the target element name
         """
+        default_path = os.path.dirname(__file__) + "/data/atom.csv"
+        self.path = path if path is not None else default_path
         df_atom_features = pd.read_csv(path).drop(excluded_col, axis=1)
         df_atom_features = ((df_atom_features - df_atom_features.min()) / (df_atom_features.max() - df_atom_features.min()))
         self.atom_feature_values = df_atom_features.values.T

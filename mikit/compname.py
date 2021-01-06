@@ -7,13 +7,14 @@ This module converts chemical formula information into numerical values.
 """
 
 class ChemFormula:
-    def __init__(self, path="./data/atom.csv", index="Element"):
+    def __init__(self, path=None, index="Element"):
         """
         Args:
             path(str) : Path of the csv file containing the name of the target element
             index(str) : Index with the target element name
         """
-        self.path = path
+        default_path = os.path.dirname(__file__) + "/data/atom.csv"
+        self.path = path if path is not None else default_path
         self.atoms = pd.read_csv(self.path)[index].values
         patterns = str()
         for i, a in enumerate(self.atoms):
@@ -110,7 +111,7 @@ class ChemFormula:
 
 
 class TriChemFormula(ChemFormula):
-    def __init__(self, path="./data/atom.csv", index="Element"):
+    def __init__(self, path=None, index="Element"):
         super().__init__(path, index)
     
     def get_tri_name(self, origin_tar_atoms, delta, conductor_atom = "F", index = "valence"):
