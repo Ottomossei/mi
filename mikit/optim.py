@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy.stats import norm
 import numpy as np
 
-from compname import ChemFormula, TriChemFormula
+from .compname import ChemFormula, TriChemFormula
 
 BASIC_KERNEL = ConstantKernel() * Matern(nu=2.5) + WhiteKernel() + ConstantKernel() * DotProduct()
 
