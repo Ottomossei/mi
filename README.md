@@ -6,7 +6,7 @@ This module has the following features.
  - Output of feature values considering chemical properties and mole ratios of constituent elements
  - Feature reduction considering R2 between features (Filter method)
  - Feature reduction by forward feature selection (Wrapper method)
- - Batch Bayesian optimization
+ - Batch Bayesian Optimization
  - Output of plots and contours in pseudo three-component system diagrams
 
 # Requirement
@@ -51,8 +51,8 @@ cation_molratio = cn.get_molratio(comp, exc_atoms=["F"])
 # More detailed usage
 Detailed usages can be found at the following link.
  - [Learning process](https://github.com/Ottomossei/mikit/blob/main/example/machine_learning/learning.ipynb)
-  - [Predicting Process](https://github.com/Ottomossei/mikit/blob/main/example/machine_learning/predict.ipynb)
- - [Bayesian optimization](https://github.com/Ottomossei/mikit/blob/main/example/bayes/bayes.ipynb)
+ - [Predicting process](https://github.com/Ottomossei/mikit/blob/main/example/machine_learning/predict.ipynb)
+ - [Bayesian Optimization](https://github.com/Ottomossei/mikit/blob/main/example/bayes/bayes.ipynb)
 
 ## Author
 If you have any troubles or questions, please contact [Ottomossei](https://github.com/Ottomossei).
